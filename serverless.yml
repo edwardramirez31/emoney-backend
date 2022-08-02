@@ -1,0 +1,100 @@
+service: ecommerce
+frameworkVersion: '>=2.35.0'
+
+plugins:
+  - serverless-webpack
+  - serverless-dynamodb-local
+  - serverless-offline
+  - serverless-dynamodb-stream-arn-plugin
+
+provider:
+  stage: dev
+  name: aws
+  runtime: nodejs14.x
+  timeout: 30
+  lambdaHashingVersion: '20201221'
+  region: us-east-1
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    TARGET_S3_BUCKET: products-backup-${opt:stage, self:provider.stage, "dev"}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - 's3:GetObject'
+            - 's3:PutObject'
+            - 's3:ListBucket'
+          Resource:
+            - 'arn:aws:s3:::products-backup-dev/*'
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
+
+functions:
+  get-product-by-id:
+    handler: src/handlers/get-by-id.handler
+    events:
+      - httpApi:
+          path: /product/{id}
+          method: get
+
+  get-products:
+    handler: src/handlers/get-list.handler
+    events:
+      - httpApi:
+          path: /product
+          method: get
+
+  create-product:
+    handler: src/handlers/create.handler
+    events:
+      - httpApi:
+          path: /product
+          method: post
+
+  update-product:
+    handler: src/handlers/update.handler
+    events:
+      - httpApi:
+          path: /product/{id}
+          method: put
+
+  delete-product:
+    handler: src/handlers/delete.handler
+    events:
+      - httpApi:
+          path: /product/{id}
+          method: delete
+
+  productsDynamoStream:
+    handler: src/handlers/product-stream.handler
+    name: ${self:service}-productEmailSender-${opt:stage, self:provider.stage, "dev"}-function
+    environment:
+      TARGET_S3_BUCKET: ${self:provider.environment.TARGET_S3_BUCKET}
+      FILTER_PROPERTIES: '["ssn", "dob"]'
+      NUMBERS_TO_RANGE: '[["ficoAutoScore", "10"]]'
+      DATES: 'DD/MM/YYYY'
+    events:
+      - stream:
+          type: dynamodb
+          arn: ${ssm:ecommerce-products-stream-dev}
+          batchSize: 1
+          startingPosition: LATEST
+          enabled: true
+
+resources:
+  - ${file(./sls/${self:provider.stage}/resources/main.yml)}
+
+custom:
+  # TableName: !GetAtt ProductsTable.TableName
+  webpack:
+    packager: 'yarn'
+    keepOutputDirectory: true
+    webpackConfig: 'webpack.config.js'

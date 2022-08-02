@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "commonjs",
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+    "useUnknownInCatchVariables": false,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "outDir": "./build",
+    "rootDir": "./",
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@handlers/types": ["src/handlers/handlers.types.ts"]
+      //      "@utils/*": ["utils/*"],
+      //      "@ingestion/*": ["ingestion/*"]
+    },
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+  },
+  "exclude": [
+    "**/node_modules/**/*",
+    ".serverless/**/*",
+    "node_modules",
+  ]
+}
