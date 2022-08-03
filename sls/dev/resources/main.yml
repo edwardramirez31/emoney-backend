@@ -1,18 +1,94 @@
 Description: project resources
 Resources:
-  ProductsTable:
+  AccountsTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ${self:provider.environment.DYNAMODB_TABLE}
+      TableName: ${self:provider.environment.DYNAMODB_ACCOUNTS_TABLE}
       BillingMode: PAY_PER_REQUEST
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
+        - AttributeName: tenantId
+          AttributeType: S
       KeySchema:
         - AttributeName: id
           KeyType: HASH
+        - AttributeName: tenantId
+          KeyType: RANGE
+
+  CategoryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:provider.environment.DYNAMODB_CATEGORY_TABLE}
+      BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: tenantId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: tenantId
+          KeyType: RANGE
+
+  GoalTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:provider.environment.DYNAMODB_GOAL_TABLE}
+      BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: tenantId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: tenantId
+          KeyType: RANGE
+
+  TransactionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:provider.environment.DYNAMODB_TRANSACTION_TABLE}
+      BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: tenantId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: tenantId
+          KeyType: RANGE
+
+  TransferTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:provider.environment.DYNAMODB_TRANSFER_TABLE}
+      BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: tenantId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: tenantId
+          KeyType: RANGE
 
   Bucket:
     Type: AWS::S3::Bucket
@@ -32,16 +108,12 @@ Resources:
             Id: CORSRuleId1
             MaxAge: '3600'
 
-  UserTableStreamParameter:
-    DeletionPolicy: Retain
-    Type: AWS::SSM::Parameter
-    DependsOn: ProductsTable
-    Properties:
-      Description: PRODUCTS_TABLE_STREAM_ARN
-      Name: ${self:service}-products-stream-${opt:stage, self:provider.stage, "dev"}
-      Type: String
-      Value: !GetAtt ProductsTable.StreamArn
-      # Value: ${fetchStreamARN(${self:provider.environment.DYNAMODB_TABLE})}
-      # Value: ${fetchStreamARN(${self:custom.TableName})}
-# params:
-#   TableName: !GetAtt ProductsTable.TableName
+  # UserTableStreamParameter:
+  #   DeletionPolicy: Retain
+  #   Type: AWS::SSM::Parameter
+  #   DependsOn: AccountsTable
+  #   Properties:
+  #     Description: PRODUCTS_TABLE_STREAM_ARN
+  #     Name: ${self:service}-accounts-stream-${opt:stage, self:provider.stage, "dev"}
+  #     Type: String
+  #     Value: !GetAtt AccountsTable.StreamArn

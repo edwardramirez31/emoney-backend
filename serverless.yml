@@ -1,4 +1,4 @@
-service: ecommerce
+service: emoney
 frameworkVersion: '>=2.35.0'
 
 plugins:
@@ -15,7 +15,11 @@ provider:
   lambdaHashingVersion: '20201221'
   region: us-east-1
   environment:
-    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    DYNAMODB_ACCOUNTS_TABLE: 'Account'
+    DYNAMODB_CATEGORY_TABLE: 'Category'
+    DYNAMODB_GOAL_TABLE: 'Goal'
+    DYNAMODB_TRANSACTION_TABLE: 'Transaction'
+    DYNAMODB_TRANSFER_TABLE: 'Transfer'
     TARGET_S3_BUCKET: products-backup-${opt:stage, self:provider.stage, "dev"}
   iam:
     role:
@@ -35,59 +39,205 @@ provider:
             - dynamodb:PutItem
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
-          Resource: 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
+            - dynamodb:DescribeTable
+          Resource:
+            - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_ACCOUNTS_TABLE}'
+            - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_CATEGORY_TABLE}'
+            - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_GOAL_TABLE}'
+            - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TRANSACTION_TABLE}'
+            - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TRANSFER_TABLE}'
 
 functions:
-  get-product-by-id:
-    handler: src/handlers/get-by-id.handler
+  get-account-by-id:
+    handler: src/handlers/account/getById.handler
     events:
       - httpApi:
-          path: /product/{id}
+          path: /account/{id}
           method: get
 
-  get-products:
-    handler: src/handlers/get-list.handler
+  get-accounts:
+    handler: src/handlers/account/scanByTenantId.handler
     events:
       - httpApi:
-          path: /product
+          path: /account
           method: get
 
-  create-product:
-    handler: src/handlers/create.handler
+  create-account:
+    handler: src/handlers/account/create.handler
     events:
       - httpApi:
-          path: /product
+          path: /account
           method: post
 
-  update-product:
-    handler: src/handlers/update.handler
+  update-account:
+    handler: src/handlers/account/update.handler
     events:
       - httpApi:
-          path: /product/{id}
+          path: /account/{id}
           method: put
 
-  delete-product:
-    handler: src/handlers/delete.handler
+  delete-account:
+    handler: src/handlers/account/delete.handler
     events:
       - httpApi:
-          path: /product/{id}
+          path: /account/{id}
           method: delete
 
-  productsDynamoStream:
-    handler: src/handlers/product-stream.handler
-    name: ${self:service}-productEmailSender-${opt:stage, self:provider.stage, "dev"}-function
-    environment:
-      TARGET_S3_BUCKET: ${self:provider.environment.TARGET_S3_BUCKET}
-      FILTER_PROPERTIES: '["ssn", "dob"]'
-      NUMBERS_TO_RANGE: '[["ficoAutoScore", "10"]]'
-      DATES: 'DD/MM/YYYY'
+  get-transfer-by-id:
+    handler: src/handlers/transfer/getById.handler
     events:
-      - stream:
-          type: dynamodb
-          arn: ${ssm:ecommerce-products-stream-dev}
-          batchSize: 1
-          startingPosition: LATEST
-          enabled: true
+      - httpApi:
+          path: /transfer/{id}
+          method: get
+
+  get-transfers:
+    handler: src/handlers/transfer/scanByTenantId.handler
+    events:
+      - httpApi:
+          path: /transfer
+          method: get
+
+  create-transfer:
+    handler: src/handlers/transfer/create.handler
+    events:
+      - httpApi:
+          path: /transfer
+          method: post
+
+  update-transfer:
+    handler: src/handlers/transfer/update.handler
+    events:
+      - httpApi:
+          path: /transfer/{id}
+          method: put
+
+  delete-transfer:
+    handler: src/handlers/transfer/delete.handler
+    events:
+      - httpApi:
+          path: /transfer/{id}
+          method: delete
+
+  get-transaction-by-id:
+    handler: src/handlers/transaction/getById.handler
+    events:
+      - httpApi:
+          path: /transaction/{id}
+          method: get
+
+  get-transactions:
+    handler: src/handlers/transaction/scanByTenantId.handler
+    events:
+      - httpApi:
+          path: /transaction
+          method: get
+
+  create-transaction:
+    handler: src/handlers/transaction/create.handler
+    events:
+      - httpApi:
+          path: /transaction
+          method: post
+
+  update-transaction:
+    handler: src/handlers/transaction/update.handler
+    events:
+      - httpApi:
+          path: /transaction/{id}
+          method: put
+
+  delete-transaction:
+    handler: src/handlers/transaction/delete.handler
+    events:
+      - httpApi:
+          path: /transaction/{id}
+          method: delete
+
+  get-goal-by-id:
+    handler: src/handlers/goal/getById.handler
+    events:
+      - httpApi:
+          path: /goal/{id}
+          method: get
+
+  get-goals:
+    handler: src/handlers/goal/scanByTenantId.handler
+    events:
+      - httpApi:
+          path: /goal
+          method: get
+
+  create-goal:
+    handler: src/handlers/goal/create.handler
+    events:
+      - httpApi:
+          path: /goal
+          method: post
+
+  update-goal:
+    handler: src/handlers/goal/update.handler
+    events:
+      - httpApi:
+          path: /goal/{id}
+          method: put
+
+  delete-goal:
+    handler: src/handlers/goal/delete.handler
+    events:
+      - httpApi:
+          path: /goal/{id}
+          method: delete
+
+  get-category-by-id:
+    handler: src/handlers/category/getById.handler
+    events:
+      - httpApi:
+          path: /category/{id}
+          method: get
+
+  get-categories:
+    handler: src/handlers/category/scanByTenantId.handler
+    events:
+      - httpApi:
+          path: /category
+          method: get
+
+  create-category:
+    handler: src/handlers/category/create.handler
+    events:
+      - httpApi:
+          path: /category
+          method: post
+
+  update-category:
+    handler: src/handlers/category/update.handler
+    events:
+      - httpApi:
+          path: /category/{id}
+          method: put
+
+  delete-category:
+    handler: src/handlers/category/delete.handler
+    events:
+      - httpApi:
+          path: /category/{id}
+          method: delete
+
+  # productsDynamoStream:
+  #   handler: src/handlers/product-stream.handler
+  #   name: ${self:service}-productEmailSender-${opt:stage, self:provider.stage, "dev"}-function
+  #   environment:
+  #     TARGET_S3_BUCKET: ${self:provider.environment.TARGET_S3_BUCKET}
+  #     FILTER_PROPERTIES: '["ssn", "dob"]'
+  #     NUMBERS_TO_RANGE: '[["ficoAutoScore", "10"]]'
+  #     DATES: 'DD/MM/YYYY'
+  #   events:
+  #     - stream:
+  #         type: dynamodb
+  #         arn: ${ssm:emoney-accounts-stream-dev}
+  #         batchSize: 1
+  #         startingPosition: LATEST
+  #         enabled: true
 
 resources:
   - ${file(./sls/${self:provider.stage}/resources/main.yml)}

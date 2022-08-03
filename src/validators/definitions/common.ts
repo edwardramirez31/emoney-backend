@@ -1,7 +1,7 @@
 export default {
   $id: 'common',
   definitions: {
-    userId: {
+    tenantId: {
       type: 'string',
       minLength: 1
     },
