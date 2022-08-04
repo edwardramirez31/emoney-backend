@@ -2,15 +2,16 @@ import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 import { accountValidator } from 'src/validators/create-account-.validator';
 import AccountRepository, { AccountRequest } from 'src/repositories/account';
 
-export const handler = apiGwProxy<Omit<AccountRequest, 'id'>>({
+export const handler = apiGwProxy<Omit<AccountRequest, 'id' | 'tenantId'>>({
   validator: accountValidator,
   handler: async (event) => {
     const body = event.body!;
     const { id } = event.pathParameters!;
+    const tenantId = event.requestContext.authorizer?.claims.sub;
 
     const repository = new AccountRepository();
 
-    const account = await repository.update({ id: id ?? '', ...body });
+    const account = await repository.update({ id: id ?? '', tenantId, ...body });
 
     return {
       statusCode: 200,

@@ -1,5 +1,10 @@
 Description: project resources
 Resources:
+  # MyApiGW:
+  #   Type: AWS::ApiGateway::RestApi
+  #   Properties:
+  #     Name: MyApiGW
+
   AccountsTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -90,6 +95,42 @@ Resources:
         - AttributeName: tenantId
           KeyType: RANGE
 
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: auth-pool
+      UsernameAttributes:
+        - email
+      Schema:
+        - Name: email
+          Required: true
+          Mutable: true
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+      AutoVerifiedAttributes: ['email']
+
+  UserClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: user-pool-ui
+      GenerateSecret: false
+      UserPoolId: !Ref UserPool
+      AccessTokenValidity: 5
+      IdTokenValidity: 5
+      ExplicitAuthFlows:
+        - 'ADMIN_NO_SRP_AUTH'
+
+  # Authorizer:
+  #   Type: AWS::ApiGateway::Authorizer
+  #   Properties:
+  #     Type: COGNITO_USER_POOLS
+  #     ProviderARNs:
+  #       - !GetAtt UserPool.Arn
+  #     IdentitySource: method.request.header.Authorization
+  #     Name: PrivateAuthorizer
+  #     RestApiId: !Ref MyApiGW
+
   Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -107,13 +148,33 @@ Resources:
             AllowedOrigins: ['*']
             Id: CORSRuleId1
             MaxAge: '3600'
+# Outputs:
+#   AuthorizerRef:
+#     Value:
+#       Ref: Authorizer
+#     Export:
+#       Name: authorizer-ref-${opt:stage, self:provider.stage, "dev"}
 
-  # UserTableStreamParameter:
-  #   DeletionPolicy: Retain
-  #   Type: AWS::SSM::Parameter
-  #   DependsOn: AccountsTable
-  #   Properties:
-  #     Description: PRODUCTS_TABLE_STREAM_ARN
-  #     Name: ${self:service}-accounts-stream-${opt:stage, self:provider.stage, "dev"}
-  #     Type: String
-  #     Value: !GetAtt AccountsTable.StreamArn
+#   ApiGatewayRestApiId:
+#     Value:
+#       Ref: MyApiGW
+#     Export:
+#       Name: api-gateway-${opt:stage, self:provider.stage, "dev"}-rest-api-id
+
+#   ApiGatewayRestApiRootResourceId:
+#     Value:
+#       Fn::GetAtt:
+#         - MyApiGW
+#         - RootResourceId
+#     Export:
+#       Name: api-gateway-${opt:stage, self:provider.stage, "dev"}-root-resource-id
+
+# UserTableStreamParameter:
+#   DeletionPolicy: Retain
+#   Type: AWS::SSM::Parameter
+#   DependsOn: AccountsTable
+#   Properties:
+#     Description: PRODUCTS_TABLE_STREAM_ARN
+#     Name: ${self:service}-accounts-stream-${opt:stage, self:provider.stage, "dev"}
+#     Type: String
+#     Value: !GetAtt AccountsTable.StreamArn
