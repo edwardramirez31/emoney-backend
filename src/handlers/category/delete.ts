@@ -1,13 +1,10 @@
 import CategoryRepository from 'src/repositories/category';
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 
-interface AccountBody {
-  tenantId: string;
-}
-
-export const handler = apiGwProxy<AccountBody>({
+export const handler = apiGwProxy({
   handler: async (event) => {
-    const { tenantId } = event.body!;
+    const tenantId = event.requestContext.authorizer?.claims.sub;
+
     const { id } = event.pathParameters!;
 
     const repository = new CategoryRepository();

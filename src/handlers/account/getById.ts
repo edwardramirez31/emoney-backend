@@ -3,13 +3,12 @@ import AccountRepository from 'src/repositories/account';
 
 interface AccountBody {
   id: string;
-  tenantId: string;
 }
 
 export const handler = apiGwProxy<AccountBody>({
   handler: async (event) => {
-    const { tenantId } = event.body!;
     const { id } = event.pathParameters!;
+    const tenantId = event.requestContext.authorizer?.claims.sub;
 
     const repository = new AccountRepository();
 

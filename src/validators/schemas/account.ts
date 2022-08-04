@@ -9,16 +9,13 @@ export default {
           type: 'string',
           minLength: 1
         },
-        tenantId: {
-          $ref: 'common#/definitions/tenantId'
-        },
         cleared: { type: 'number' },
         balance: { type: 'number' },
         goal: { type: 'number' },
         icon: { type: 'string' },
         color: { type: 'string', isTrimmed: true, pattern: '^#(?:[0-9a-fA-F]{3}){1,2}$' }
       },
-      required: ['name', 'tenantId', 'icon', 'color']
+      required: ['name', 'icon', 'color']
     }
   },
   required: ['body']

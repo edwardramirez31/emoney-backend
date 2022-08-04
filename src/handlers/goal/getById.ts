@@ -2,14 +2,11 @@ import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 import { accountValidator } from 'src/validators/create-account-.validator';
 import SavingGoalRepository from 'src/repositories/goal';
 
-interface AccountBody {
-  tenantId: string;
-}
-
-export const handler = apiGwProxy<AccountBody>({
+export const handler = apiGwProxy({
   validator: accountValidator,
   handler: async (event) => {
-    const { tenantId } = event.body!;
+    const tenantId = event.requestContext.authorizer?.claims.sub;
+
     const { id } = event.pathParameters!;
 
     const repository = new SavingGoalRepository();

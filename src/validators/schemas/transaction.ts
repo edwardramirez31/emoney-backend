@@ -5,9 +5,6 @@ export default {
       type: 'object',
       additionalProperties: false,
       properties: {
-        tenantId: {
-          $ref: 'common#/definitions/tenantId'
-        },
         accountId: { type: 'string', minLength: 1 },
         categoryId: { type: 'string', minLength: 1 },
         comment: { type: 'string' },
@@ -17,7 +14,7 @@ export default {
         type: { type: 'number', enum: [1, 2] },
         amount: { type: 'number' }
       },
-      required: ['accountId', 'tenantId', 'categoryId', 'date', 'type', 'amount']
+      required: ['accountId', 'categoryId', 'date', 'type', 'amount']
     }
   },
   required: ['body']
