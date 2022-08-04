@@ -116,8 +116,14 @@ Resources:
       ClientName: user-pool-ui
       GenerateSecret: false
       UserPoolId: !Ref UserPool
-      AccessTokenValidity: 5
-      IdTokenValidity: 5
+      AccessTokenValidity: 30
+      IdTokenValidity: 30
+      RefreshTokenValidity: 1
+      TokenValidityUnits:
+        AccessToken: minutes
+        IdToken: minutes
+        RefreshToken: days
+
       ExplicitAuthFlows:
         - 'ADMIN_NO_SRP_AUTH'
 
