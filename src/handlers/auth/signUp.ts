@@ -55,11 +55,9 @@ export const handler = apiGwProxy<SignUpRequest>({
       authFlow: AUTH_FLOW
     });
 
-    const { Username: userId, Attributes: userData } = response.User;
-
     return {
       statusCode: 201,
-      body: JSON.stringify({ userId, userData, ...authResponse })
+      body: JSON.stringify({ user: { ...response.User }, ...authResponse })
     };
   }
 });
