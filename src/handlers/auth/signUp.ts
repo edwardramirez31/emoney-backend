@@ -1,5 +1,5 @@
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
-import { USER_POOL_ID } from 'src/constants';
+import { AUTH_FLOW, USER_POOL_ID } from 'src/constants';
 import { cognitoService } from 'src/services';
 import { authValidator } from 'src/validators/auth.validator';
 
@@ -46,7 +46,14 @@ export const handler = apiGwProxy<SignUpRequest>({
     };
     await cognitoService.adminSetUserPassword(setPasswordParams).promise();
 
-    const authResponse = await authenticateUser(event.body!);
+    const authResponse = await authenticateUser({
+      authParameters: {
+        USERNAME: email,
+        PASSWORD: password
+      },
+      authFlow: AUTH_FLOW
+    });
+
     const { Username: userId, Attributes: userData } = response.User;
 
     return {
