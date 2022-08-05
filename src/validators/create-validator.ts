@@ -1,7 +1,10 @@
 import Ajv, { Schema, ValidateFunction } from 'ajv';
 import addFormats from 'ajv-formats';
 
-export const crateValidator = (ajv: Ajv, schema: Schema): ValidateFunction => {
+import common from './definitions/common';
+
+export const crateValidator = (schema: Schema): ValidateFunction => {
+  const ajv = new Ajv({ schemas: [common], removeAdditional: true });
   addFormats(ajv, ['date', 'email']);
   ajv.addKeyword({
     keyword: 'isTrimmed',

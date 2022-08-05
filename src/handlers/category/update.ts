@@ -1,10 +1,11 @@
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
-import { categoryValidator } from 'src/validators/category.validator';
+import { crateValidator } from 'src/validators/create-validator';
+import categorySchema from 'src/validators/schemas/category';
 
 import CategoryRepository, { CategoryRequest } from './../../repositories/category';
 
 export const handler = apiGwProxy<Omit<CategoryRequest, 'id' | 'tenantId'>>({
-  validator: categoryValidator,
+  validator: crateValidator(categorySchema),
   handler: async (event) => {
     const body = event.body!;
     const { id } = event.pathParameters!;

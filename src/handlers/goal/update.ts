@@ -1,9 +1,10 @@
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 import SavingGoalRepository, { SavingGoalRequest } from 'src/repositories/goal';
-import { goalValidator } from 'src/validators/goal.validator';
+import { crateValidator } from 'src/validators/create-validator';
+import goalSchema from 'src/validators/schemas/goal';
 
 export const handler = apiGwProxy<Omit<SavingGoalRequest, 'id' | 'tenantId'>>({
-  validator: goalValidator,
+  validator: crateValidator(goalSchema),
   handler: async (event) => {
     const body = event.body!;
     const tenantId = event.requestContext.authorizer?.claims.sub;

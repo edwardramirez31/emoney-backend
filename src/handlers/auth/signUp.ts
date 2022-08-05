@@ -1,7 +1,8 @@
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 import { AUTH_FLOW, USER_POOL_ID } from 'src/constants';
 import { cognitoService } from 'src/services';
-import { authValidator } from 'src/validators/auth.validator';
+import { crateValidator } from 'src/validators/create-validator';
+import authSchema from 'src/validators/schemas/auth';
 
 import { authenticateUser } from './login';
 
@@ -11,7 +12,7 @@ interface SignUpRequest {
 }
 
 export const handler = apiGwProxy<SignUpRequest>({
-  validator: authValidator,
+  validator: crateValidator(authSchema),
   handler: async (event) => {
     const { email, password } = event.body!;
 
