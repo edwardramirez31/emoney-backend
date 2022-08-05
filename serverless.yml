@@ -39,6 +39,7 @@ provider:
             - cognito-idp:AdminSetUserPassword
             - cognito-idp:AdminUpdateUserAttributes
             - cognito-idp:AdminGetUser
+            - cognito-idp:AdminRespondToAuthChallenge
           Resource: '*'
         - Effect: Allow
           Action:
@@ -138,7 +139,7 @@ functions:
     handler: src/handlers/user/updateProfile.handler
     events:
       - http:
-          path: auth/profile
+          path: user/profile
           method: put
           cors: true
           authorizer:
@@ -153,7 +154,7 @@ functions:
     handler: src/handlers/user/getProfile.handler
     events:
       - http:
-          path: auth/profile
+          path: user/profile
           method: get
           cors: true
           authorizer:
@@ -164,39 +165,55 @@ functions:
                 - UserPool
                 - Arn
 
-  get-account-by-id:
-    handler: src/handlers/account/getById.handler
+  confirmUserSignUp:
+    handler: src/handlers/auth/confirmUserSignUp.handler
     events:
       - http:
-          path: /account/{id}
-          method: get
-          authorizer:
-            name: PrivateAuthorizer
-            type: COGNITO_USER_POOLS
-            arn:
-              Fn::GetAtt:
-                - UserPool
-                - Arn
-            claims:
-              - email
-              - sub
+          path: auth/confirm-signup
+          method: post
+          cors: true
 
-  get-accounts:
-    handler: src/handlers/account/scanByTenantId.handler
+  respondToAuthChallenge:
+    handler: src/handlers/auth/respondToAuthChallenge.handler
     events:
       - http:
-          path: /account
-          method: get
-          authorizer:
-            name: PrivateAuthorizer
-            type: COGNITO_USER_POOLS
-            arn:
-              Fn::GetAtt:
-                - UserPool
-                - Arn
-            claims:
-              - email
-              - sub
+          path: auth/auth-challenge
+          method: post
+          cors: true
+
+  # get-account-by-id:
+  #   handler: src/handlers/account/getById.handler
+  #   events:
+  #     - http:
+  #         path: /account/{id}
+  #         method: get
+  #         authorizer:
+  #           name: PrivateAuthorizer
+  #           type: COGNITO_USER_POOLS
+  #           arn:
+  #             Fn::GetAtt:
+  #               - UserPool
+  #               - Arn
+  #           claims:
+  #             - email
+  #             - sub
+
+  # get-accounts:
+  #   handler: src/handlers/account/scanByTenantId.handler
+  #   events:
+  #     - http:
+  #         path: /account
+  #         method: get
+  #         authorizer:
+  #           name: PrivateAuthorizer
+  #           type: COGNITO_USER_POOLS
+  #           arn:
+  #             Fn::GetAtt:
+  #               - UserPool
+  #               - Arn
+  #           claims:
+  #             - email
+  #             - sub
 
   create-account:
     handler: src/handlers/account/create.handler

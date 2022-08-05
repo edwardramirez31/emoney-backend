@@ -14,6 +14,7 @@ export const handler = apiGwProxy<ProfileRequest>({
     const { userAttributes } = event.body!;
     const username = event.requestContext.authorizer?.claims.email;
 
+    // eslint-disable-next-line no-console
     console.log(JSON.stringify(event.requestContext.authorizer?.claims));
     const mappedAttributes = Object.entries(userAttributes).map(([name, value]) => ({
       Name: name,
