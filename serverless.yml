@@ -37,6 +37,8 @@ provider:
             - cognito-idp:AdminInitiateAuth
             - cognito-idp:AdminCreateUser
             - cognito-idp:AdminSetUserPassword
+            - cognito-idp:AdminUpdateUserAttributes
+            - cognito-idp:AdminGetUser
           Resource: '*'
         - Effect: Allow
           Action:
@@ -123,6 +125,36 @@ functions:
       - http:
           path: auth/change-password
           method: post
+          cors: true
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+
+  updateProfile:
+    handler: src/handlers/user/updateProfile.handler
+    events:
+      - http:
+          path: auth/profile
+          method: put
+          cors: true
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+
+  getProfile:
+    handler: src/handlers/user/getProfile.handler
+    events:
+      - http:
+          path: auth/profile
+          method: get
           cors: true
           authorizer:
             name: PrivateAuthorizer

@@ -3,6 +3,7 @@ import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 import { cognitoService } from 'src/services';
 import { crateValidator } from 'src/validators/create-validator';
 import forgotPasswordSchema from 'src/validators/schemas/forgotPassword';
+
 interface ForgotRequest {
   email: string;
 }
