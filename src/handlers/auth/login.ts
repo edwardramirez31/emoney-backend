@@ -10,6 +10,7 @@ interface LoginRequest {
 }
 
 interface AuthResponse {
+  idToken: string | undefined;
   accessToken: string | undefined;
   refreshToken: string | undefined;
   expiresAt: number | undefined;
@@ -37,10 +38,11 @@ export const authenticateUser = async ({ authParameters, authFlow }: Authenticat
     throw { response: { status: 400, body: { errorMessage: 'auth failed' } } };
   }
 
-  const { IdToken, RefreshToken, ExpiresIn } = response.AuthenticationResult;
+  const { IdToken, RefreshToken, AccessToken, ExpiresIn } = response.AuthenticationResult;
 
   return {
-    accessToken: IdToken,
+    idToken: IdToken,
+    accessToken: AccessToken,
     refreshToken: RefreshToken,
     expiresAt: ExpiresIn
   };
