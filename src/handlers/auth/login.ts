@@ -2,6 +2,7 @@ import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 import { USER_POOL_ID, USER_POOL_CLIENT_ID, AUTH_FLOW } from 'src/constants';
 import { cognitoService } from 'src/services';
 import { authValidator } from 'src/validators/auth.validator';
+import { CognitoIdentityServiceProvider } from 'aws-sdk';
 
 interface LoginRequest {
   email: string;
@@ -14,14 +15,18 @@ interface AuthResponse {
   expiresAt: number | undefined;
 }
 
-export const authenticateUser = async ({ email, password }: LoginRequest): Promise<AuthResponse> => {
+interface AuthenticateUserParams {
+  authFlow?: string;
+  authParameters: CognitoIdentityServiceProvider.AuthParametersType;
+}
+
+export const authenticateUser = async ({ authParameters, authFlow }: AuthenticateUserParams): Promise<AuthResponse> => {
   const params = {
-    AuthFlow: AUTH_FLOW ?? '',
+    AuthFlow: authFlow ?? '',
     UserPoolId: USER_POOL_ID ?? '',
     ClientId: USER_POOL_CLIENT_ID ?? '',
     AuthParameters: {
-      USERNAME: email,
-      PASSWORD: password
+      ...authParameters
     }
   };
 
@@ -44,7 +49,15 @@ export const authenticateUser = async ({ email, password }: LoginRequest): Promi
 export const handler = apiGwProxy<LoginRequest>({
   validator: authValidator,
   handler: async (event) => {
-    const authResponse = await authenticateUser(event.body!);
+    const { email, password } = event.body!;
+
+    const authResponse = await authenticateUser({
+      authParameters: {
+        USERNAME: email,
+        PASSWORD: password
+      },
+      authFlow: AUTH_FLOW
+    });
 
     return {
       statusCode: 200,

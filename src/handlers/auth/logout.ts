@@ -3,11 +3,11 @@ import { USER_POOL_CLIENT_ID } from 'src/constants';
 import { cognitoService } from 'src/services';
 import { logoutValidator } from 'src/validators/logout.validator';
 
-interface LoginRequest {
+interface LogoutRequest {
   refreshToken: string;
 }
 
-export const handler = apiGwProxy<LoginRequest>({
+export const handler = apiGwProxy<LogoutRequest>({
   validator: logoutValidator,
   handler: async (event) => {
     const { refreshToken } = event.body!;
