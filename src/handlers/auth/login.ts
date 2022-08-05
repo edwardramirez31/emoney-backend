@@ -1,8 +1,9 @@
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 import { USER_POOL_ID, USER_POOL_CLIENT_ID, AUTH_FLOW } from 'src/constants';
 import { cognitoService } from 'src/services';
-import { authValidator } from 'src/validators/auth.validator';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
+import { crateValidator } from 'src/validators/create-validator';
+import authSchema from 'src/validators/schemas/auth';
 
 interface LoginRequest {
   email: string;
@@ -49,7 +50,7 @@ export const authenticateUser = async ({ authParameters, authFlow }: Authenticat
 };
 
 export const handler = apiGwProxy<LoginRequest>({
-  validator: authValidator,
+  validator: crateValidator(authSchema),
   handler: async (event) => {
     const { email, password } = event.body!;
 

@@ -8,5 +8,5 @@ export type GatewayProxyEvent<T> = Omit<Event, 'body'> & { body: T | null };
 
 export interface ApiGwProxyParams<T> {
   handler: (event: GatewayProxyEvent<T>, context: Context) => Promise<APIGatewayProxyResult>;
-  validator?: () => ValidateFunction;
+  validator?: ValidateFunction;
 }

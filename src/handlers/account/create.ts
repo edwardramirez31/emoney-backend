@@ -1,10 +1,11 @@
 import * as uuid from 'uuid';
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
-import { accountValidator } from 'src/validators/create-account-.validator';
 import AccountRepository, { AccountRequest } from 'src/repositories/account';
+import { crateValidator } from 'src/validators/create-validator';
+import accountSchema from 'src/validators/schemas/account';
 
 export const handler = apiGwProxy<Omit<AccountRequest, 'id' | 'tenantId'>>({
-  validator: accountValidator,
+  validator: crateValidator(accountSchema),
   handler: async (event) => {
     const body = event.body!;
     const tenantId = event.requestContext.authorizer?.claims.sub;

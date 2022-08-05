@@ -1,14 +1,15 @@
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 import { USER_POOL_CLIENT_ID } from 'src/constants';
 import { cognitoService } from 'src/services';
-import { logoutValidator } from 'src/validators/logout.validator';
+import { crateValidator } from 'src/validators/create-validator';
+import logoutSchema from 'src/validators/schemas/logout';
 
 interface LogoutRequest {
   refreshToken: string;
 }
 
 export const handler = apiGwProxy<LogoutRequest>({
-  validator: logoutValidator,
+  validator: crateValidator(logoutSchema),
   handler: async (event) => {
     const { refreshToken } = event.body!;
 

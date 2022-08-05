@@ -1,6 +1,7 @@
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 import { cognitoService } from 'src/services';
-import { changePasswordValidator } from 'src/validators/changePassword.validator';
+import { crateValidator } from 'src/validators/create-validator';
+import changePasswordSchema from 'src/validators/schemas/changePassword';
 
 interface ChangePasswordRequest {
   previousPassword: string;
@@ -9,7 +10,7 @@ interface ChangePasswordRequest {
 }
 
 export const handler = apiGwProxy<ChangePasswordRequest>({
-  validator: changePasswordValidator,
+  validator: crateValidator(changePasswordSchema),
   handler: async (event) => {
     const { previousPassword, proposedPassword, accessToken } = event.body!;
 

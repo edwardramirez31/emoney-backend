@@ -86,6 +86,22 @@ functions:
           method: post
           cors: true
 
+  forgotPassword:
+    handler: src/handlers/auth/forgotPassword.handler
+    events:
+      - http:
+          path: auth/forgot-password
+          method: post
+          cors: true
+
+  confirmForgotPassword:
+    handler: src/handlers/auth/confirmForgotPassword.handler
+    events:
+      - http:
+          path: auth/confirm-forgot-password
+          method: post
+          cors: true
+
   logout:
     handler: src/handlers/auth/logout.handler
     events:

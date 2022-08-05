@@ -11,14 +11,19 @@ export const apiGwProxy =
       const mqGatewayProxyEvent = eventBodyParser<TEventBody>(event);
 
       const result = await (validator
-        ? handleValidation(mqGatewayProxyEvent, context, validator(), handler)
+        ? handleValidation(mqGatewayProxyEvent, context, validator, handler)
         : handler(mqGatewayProxyEvent, context));
 
       return result;
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(JSON.stringify(error));
+
       return {
-        statusCode: error?.response?.status || 500,
-        body: JSON.stringify(error?.response?.body || error?.message || 'Something went wrong')
+        statusCode: error?.response?.status || error?.statusCode || 500,
+        body: JSON.stringify(
+          error?.response?.body || { errorMessage: error?.message || 'Something went wrong', code: error?.code || 'Unknown' }
+        )
       };
     }
   };

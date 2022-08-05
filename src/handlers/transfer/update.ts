@@ -1,9 +1,10 @@
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 import TransferRepository, { TransferRequest } from 'src/repositories/transfer';
-import { transferValidator } from 'src/validators/transfer.validator';
+import { crateValidator } from 'src/validators/create-validator';
+import transferSchema from 'src/validators/schemas/transfer';
 
 export const handler = apiGwProxy<Omit<TransferRequest, 'id' | 'tenantId'>>({
-  validator: transferValidator,
+  validator: crateValidator(transferSchema),
   handler: async (event) => {
     const body = event.body!;
 
