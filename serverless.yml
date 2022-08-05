@@ -101,6 +101,21 @@ functions:
                 - UserPool
                 - Arn
 
+  changePassword:
+    handler: src/handlers/auth/changePassword.handler
+    events:
+      - http:
+          path: auth/change-password
+          method: post
+          cors: true
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+
   get-account-by-id:
     handler: src/handlers/account/getById.handler
     events:
