@@ -11,7 +11,7 @@ export default {
         },
         confirmationCode: {
           type: 'string',
-          minLength: 1
+          pattern: '^[0-9]{6}$'
         },
         password: {
           type: 'string',

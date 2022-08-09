@@ -4,11 +4,11 @@ import { cognitoService } from 'src/services';
 import { crateValidator } from 'src/validators/create-validator';
 import forgotPasswordSchema from 'src/validators/schemas/forgotPassword';
 
-interface ForgotRequest {
+interface ResendConfirmationCodeRequest {
   email: string;
 }
 
-export const handler = apiGwProxy<ForgotRequest>({
+export const handler = apiGwProxy<ResendConfirmationCodeRequest>({
   validator: crateValidator(forgotPasswordSchema),
   handler: async (event) => {
     const { email } = event.body!;
@@ -18,7 +18,7 @@ export const handler = apiGwProxy<ForgotRequest>({
       ClientId: USER_POOL_CLIENT_ID ?? ''
     };
 
-    const result = await cognitoService.forgotPassword(params).promise();
+    const result = await cognitoService.resendConfirmationCode(params).promise();
 
     return {
       statusCode: 200,
