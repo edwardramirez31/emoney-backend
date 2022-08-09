@@ -203,6 +203,14 @@ functions:
           method: post
           cors: true
 
+  resendConfirmationCode:
+    handler: src/handlers/auth/resendConfirmationCode.handler
+    events:
+      - http:
+          path: auth/resend-code
+          method: post
+          cors: true
+
   respondToAuthChallenge:
     handler: src/handlers/auth/respondToAuthChallenge.handler
     events:
