@@ -120,6 +120,36 @@ functions:
                 - UserPool
                 - Arn
 
+  associateMFA:
+    handler: src/handlers/auth/associateMFA.handler
+    events:
+      - http:
+          path: auth/associate-mfa
+          method: post
+          cors: true
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+
+  validateMFA:
+    handler: src/handlers/auth/validateMFA.handler
+    events:
+      - http:
+          path: auth/validate-mfa
+          method: post
+          cors: true
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+
   changePassword:
     handler: src/handlers/auth/changePassword.handler
     events:

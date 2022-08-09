@@ -8,11 +8,13 @@
     "test:ci": "jest --ci"
   },
   "dependencies": {
+    "@types/qrcode": "^1.4.2",
     "ajv": "^8.11.0",
     "ajv-formats": "^2.1.1",
     "aws-lambda": "1.0.7",
     "aws-sdk": "2.1066.0",
     "dynamoose": "^2.8.6",
+    "qrcode": "^1.5.1",
     "serverless": "2.57.0",
     "serverless-deployment-bucket": "1.5.1",
     "serverless-dynamodb-stream-arn-plugin": "^0.0.6",
