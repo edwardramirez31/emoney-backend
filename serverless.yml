@@ -35,8 +35,6 @@ provider:
         - Effect: Allow
           Action:
             - cognito-idp:AdminInitiateAuth
-            - cognito-idp:AdminCreateUser
-            - cognito-idp:AdminSetUserPassword
             - cognito-idp:AdminUpdateUserAttributes
             - cognito-idp:AdminGetUser
             - cognito-idp:AdminRespondToAuthChallenge
@@ -644,21 +642,29 @@ functions:
   #             - email
   #             - sub
 
-  # productsDynamoStream:
-  #   handler: src/handlers/product-stream.handler
-  #   name: ${self:service}-productEmailSender-${opt:stage, self:provider.stage, "dev"}-function
-  #   environment:
-  #     TARGET_S3_BUCKET: ${self:provider.environment.TARGET_S3_BUCKET}
-  #     FILTER_PROPERTIES: '["ssn", "dob"]'
-  #     NUMBERS_TO_RANGE: '[["ficoAutoScore", "10"]]'
-  #     DATES: 'DD/MM/YYYY'
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         arn: ${ssm:emoney-accounts-stream-dev}
-  #         batchSize: 1
-  #         startingPosition: LATEST
-  #         enabled: true
+  transactionsDynamoStream:
+    handler: src/handlers/streams/transactions.handler
+    name: ${self:service}-transactions-${opt:stage, self:provider.stage, "dev"}-stream
+    events:
+      - stream:
+          type: dynamodb
+          arn: !GetAtt TransactionTable.StreamArn
+          batchSize: 1
+          startingPosition: LATEST
+          enabled: true
+
+  transfersDynamoStream:
+    handler: src/handlers/streams/transfers.handler
+    name: ${self:service}-transfers-${opt:stage, self:provider.stage, "dev"}-stream
+    events:
+      - stream:
+          type: dynamodb
+          arn: !GetAtt TransferTable.StreamArn
+          batchSize: 1
+          startingPosition: LATEST
+          enabled: true
+    # environment:
+    #   TARGET_S3_BUCKET: ${self:provider.environment.TARGET_S3_BUCKET}
 
 resources:
   - ${file(./sls/${self:provider.stage}/resources/main.yml)}
