@@ -1,6 +1,7 @@
 import * as dynamoose from 'dynamoose';
 import { Model } from 'dynamoose/dist/Model';
 import { Account, AccountSchema } from 'src/models/account';
+import { CategoryType } from 'src/models/category';
 
 export interface AccountRequest {
   id: string;
@@ -13,11 +14,24 @@ export interface AccountRequest {
   goal?: number;
 }
 
+export interface UpdateOnTransactionCreated {
+  id: string;
+  tenantId: string;
+  amount: number;
+  type: CategoryType;
+}
+
+export interface UpdateOnTransactionUpdated extends UpdateOnTransactionCreated {
+  oldAmount: number;
+}
+
 export default class AccountRepository {
   private dbInstance: Model<Account>;
+  private dbInstanceModel: Model;
 
   constructor() {
     this.dbInstance = dynamoose.model<Account>('Account', AccountSchema, { create: false });
+    this.dbInstanceModel = this.dbInstance;
   }
 
   create = async (request: AccountRequest): Promise<Account> => {
@@ -58,6 +72,58 @@ export default class AccountRepository {
         throw { response: { status: 404, body: { errorMessage: 'account not found' } } };
       }
       throw { response: { status: 400, body: { errorMessage: 'something went wrong' } } };
+    }
+  };
+
+  updateOnTransactionCreated = async (request: UpdateOnTransactionCreated): Promise<void> => {
+    try {
+      await this.dbInstanceModel.update(
+        {
+          id: request.id,
+          tenantId: request.tenantId
+        },
+        {
+          $ADD: { balance: request.type === CategoryType.EXPENSE ? -request.amount : request.amount }
+        }
+      );
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(JSON.stringify(error));
+    }
+  };
+
+  updateOnTransactionUpdated = async (request: UpdateOnTransactionUpdated): Promise<void> => {
+    const amountDifference = request.amount - request.oldAmount;
+    try {
+      await this.dbInstanceModel.update(
+        {
+          id: request.id,
+          tenantId: request.tenantId
+        },
+        {
+          $ADD: { balance: request.type === CategoryType.EXPENSE ? -amountDifference : amountDifference }
+        }
+      );
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(JSON.stringify(error));
+    }
+  };
+
+  updateOnTransactionDeleted = async (request: UpdateOnTransactionCreated): Promise<void> => {
+    try {
+      await this.dbInstanceModel.update(
+        {
+          id: request.id,
+          tenantId: request.tenantId
+        },
+        {
+          $ADD: { balance: request.type === CategoryType.EXPENSE ? request.amount : -request.amount }
+        }
+      );
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(JSON.stringify(error));
     }
   };
 
