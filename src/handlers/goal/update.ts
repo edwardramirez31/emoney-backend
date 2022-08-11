@@ -10,9 +10,7 @@ export const handler = apiGwProxy<Omit<SavingGoalRequest, 'id' | 'tenantId'>>({
     const tenantId = event.requestContext.authorizer?.claims.sub;
     const { id } = event.pathParameters!;
 
-    const repository = new SavingGoalRepository();
-
-    const account = await repository.update({ id: id ?? '', tenantId, ...body });
+    const account = await SavingGoalRepository.update({ ...body }, { id: id ?? '', tenantId });
 
     return {
       statusCode: 200,

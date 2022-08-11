@@ -6,9 +6,7 @@ export const handler = apiGwProxy({
     const { id } = event.pathParameters!;
     const tenantId = event.requestContext.authorizer?.claims.sub;
 
-    const repository = new TransferRepository();
-
-    await repository.deleteById(id ?? '', tenantId);
+    await TransferRepository.deleteById(id ?? '', tenantId);
 
     return {
       statusCode: 200,

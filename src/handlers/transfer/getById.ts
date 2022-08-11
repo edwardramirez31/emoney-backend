@@ -6,13 +6,11 @@ export const handler = apiGwProxy({
     const { id } = event.pathParameters!;
     const tenantId = event.requestContext.authorizer?.claims.sub;
 
-    const repository = new TransferRepository();
-
-    const tramsfer = await repository.getById(id ?? '', tenantId);
+    const transfer = await TransferRepository.getById(id ?? '', tenantId);
 
     return {
       statusCode: 200,
-      body: JSON.stringify(tramsfer.toJSON())
+      body: JSON.stringify(transfer.toJSON())
     };
   }
 });

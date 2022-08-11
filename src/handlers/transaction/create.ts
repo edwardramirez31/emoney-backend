@@ -9,9 +9,8 @@ export const handler = apiGwProxy<Omit<TransactionRequest, 'id' | 'tenantId'>>({
   handler: async (event) => {
     const body = event.body!;
     const tenantId = event.requestContext.authorizer?.claims.sub;
-    const repository = new TransactionRepository();
 
-    const transaction = await repository.create({ id: uuid.v4(), tenantId, ...body });
+    const transaction = await TransactionRepository.create({ id: uuid.v4(), tenantId, ...body });
 
     return {
       statusCode: 201,

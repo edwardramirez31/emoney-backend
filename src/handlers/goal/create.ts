@@ -11,9 +11,7 @@ export const handler = apiGwProxy<Omit<SavingGoalRequest, 'id' | 'tenantId'>>({
     const body = event.body!;
     const tenantId = event.requestContext.authorizer?.claims.sub;
 
-    const repository = new SavingGoalRepository();
-
-    const goal = await repository.create({ id: uuid.v4(), tenantId, ...body });
+    const goal = await SavingGoalRepository.create({ id: uuid.v4(), tenantId, ...body });
 
     return {
       statusCode: 201,

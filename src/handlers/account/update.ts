@@ -12,7 +12,7 @@ export const handler = apiGwProxy<Omit<AccountRequest, 'id' | 'tenantId'>>({
 
     const repository = new AccountRepository();
 
-    const account = await repository.update({ id: id ?? '', tenantId, ...body });
+    const account = await repository.update({ ...body }, { id: id ?? '', tenantId });
 
     return {
       statusCode: 200,

@@ -7,9 +7,7 @@ export const handler = apiGwProxy({
 
     const { id } = event.pathParameters!;
 
-    const repository = new SavingGoalRepository();
-
-    const goal = await repository.getById(id ?? '', tenantId);
+    const goal = await SavingGoalRepository.getById(id ?? '', tenantId);
 
     return {
       statusCode: 200,

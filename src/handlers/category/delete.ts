@@ -7,9 +7,7 @@ export const handler = apiGwProxy({
 
     const { id } = event.pathParameters!;
 
-    const repository = new CategoryRepository();
-
-    await repository.deleteById(id ?? '', tenantId);
+    await CategoryRepository.deleteById(id ?? '', tenantId);
 
     return {
       statusCode: 200,

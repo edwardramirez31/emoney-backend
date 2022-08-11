@@ -8,11 +8,10 @@ export const handler = apiGwProxy<Omit<TransferRequest, 'id' | 'tenantId'>>({
   handler: async (event) => {
     const body = event.body!;
 
-    const repository = new TransferRepository();
     const tenantId = event.requestContext.authorizer?.claims.sub;
     const { id } = event.pathParameters!;
 
-    const transfer = await repository.update({ id: id ?? '', tenantId, ...body });
+    const transfer = await TransferRepository.update({ ...body }, { id: id ?? '', tenantId });
 
     return {
       statusCode: 200,
