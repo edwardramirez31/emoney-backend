@@ -5,9 +5,7 @@ export const handler = apiGwProxy({
   handler: async (event) => {
     const tenantId = event.requestContext.authorizer?.claims.sub;
 
-    const repository = new TransferRepository();
-
-    const transfers = await repository.getByTenantId(tenantId);
+    const transfers = await TransferRepository.getByTenantId(tenantId);
 
     return {
       statusCode: 200,

@@ -10,9 +10,7 @@ export const handler = apiGwProxy<Omit<TransferRequest, 'id' | 'tenantId'>>({
     const body = event.body!;
     const tenantId = event.requestContext.authorizer?.claims.sub;
 
-    const repository = new TransferRepository();
-
-    const transfer = await repository.create({ id: uuid.v4(), tenantId, ...body });
+    const transfer = await TransferRepository.create({ id: uuid.v4(), tenantId, ...body });
 
     return {
       statusCode: 201,

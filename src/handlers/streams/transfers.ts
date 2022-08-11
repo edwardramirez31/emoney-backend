@@ -31,10 +31,9 @@ export const handler: DynamoDBStreamHandler = async (event) => {
       });
     }
   } else {
-    console.log('Transfer was created');
-
     const incomingTransfer = DynamoDB.Converter.unmarshall(newImage) as TransferRequest;
     if (!oldImage) {
+      console.log('Transfer was created');
       await accountRepository.updateOnTransactionCreated({
         id: incomingTransfer.sender,
         tenantId: incomingTransfer.tenantId,

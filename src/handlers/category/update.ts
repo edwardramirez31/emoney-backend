@@ -10,9 +10,8 @@ export const handler = apiGwProxy<Omit<CategoryRequest, 'id' | 'tenantId'>>({
     const body = event.body!;
     const { id } = event.pathParameters!;
     const tenantId = event.requestContext.authorizer?.claims.sub;
-    const repository = new CategoryRepository();
 
-    const category = await repository.update({ id: id ?? '', tenantId, ...body });
+    const category = await CategoryRepository.update({ ...body }, { id: id ?? '', tenantId });
 
     return {
       statusCode: 200,
