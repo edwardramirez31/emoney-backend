@@ -1,7 +1,8 @@
 import * as dynamoose from 'dynamoose';
 import { Model } from 'dynamoose/dist/Model';
-import { Document } from 'dynamoose/dist/Document';
 import { Schema } from 'dynamoose/dist/Schema';
+import { Document } from 'dynamoose/dist/Document';
+
 export default class CRUDRepository<T extends Document> {
   protected dbInstance: Model<T>;
 

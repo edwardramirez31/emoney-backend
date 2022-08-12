@@ -217,42 +217,42 @@ functions:
           method: post
           cors: true
 
-  # get-account-by-id:
-  #   handler: src/handlers/account/getById.handler
-  #   events:
-  #     - http:
-  #         path: /account/{id}
-  #         method: get
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  get-account-by-id:
+    handler: src/handlers/account/index.getAccountHandler
+    events:
+      - http:
+          path: /account/{id}
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # get-accounts:
-  #   handler: src/handlers/account/scanByTenantId.handler
-  #   events:
-  #     - http:
-  #         path: /account
-  #         method: get
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  get-accounts:
+    handler: src/handlers/account/index.getAccountsHandler
+    events:
+      - http:
+          path: /account
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
   create-account:
-    handler: src/handlers/account/create.handler
+    handler: src/handlers/account/index.createAccountHandler
     events:
       - http:
           path: /account
@@ -268,379 +268,379 @@ functions:
               - email
               - sub
 
-  # update-account:
-  #   handler: src/handlers/account/update.handler
-  #   events:
-  #     - http:
-  #         path: /account/{id}
-  #         method: put
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  update-account:
+    handler: src/handlers/account/index.updateAccountHandler
+    events:
+      - http:
+          path: /account/{id}
+          method: put
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # delete-account:
-  #   handler: src/handlers/account/delete.handler
-  #   events:
-  #     - http:
-  #         path: /account/{id}
-  #         method: delete
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  delete-account:
+    handler: src/handlers/account/index.deleteAccountHandler
+    events:
+      - http:
+          path: /account/{id}
+          method: delete
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # get-transfer-by-id:
-  #   handler: src/handlers/transfer/getById.handler
-  #   events:
-  #     - http:
-  #         path: /transfer/{id}
-  #         method: get
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  get-transfer-by-id:
+    handler: src/handlers/transfer/index.getTransferHandler
+    events:
+      - http:
+          path: /transfer/{id}
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # get-transfers:
-  #   handler: src/handlers/transfer/scanByTenantId.handler
-  #   events:
-  #     - http:
-  #         path: /transfer
-  #         method: get
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  get-transfers:
+    handler: src/handlers/transfer/index.getTransfersHandler
+    events:
+      - http:
+          path: /transfer
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # create-transfer:
-  #   handler: src/handlers/transfer/create.handler
-  #   events:
-  #     - http:
-  #         path: /transfer
-  #         method: post
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  create-transfer:
+    handler: src/handlers/transfer/index.createTransferHandler
+    events:
+      - http:
+          path: /transfer
+          method: post
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # update-transfer:
-  #   handler: src/handlers/transfer/update.handler
-  #   events:
-  #     - http:
-  #         path: /transfer/{id}
-  #         method: put
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  update-transfer:
+    handler: src/handlers/transfer/index.updateTransferHandler
+    events:
+      - http:
+          path: /transfer/{id}
+          method: put
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # delete-transfer:
-  #   handler: src/handlers/transfer/delete.handler
-  #   events:
-  #     - http:
-  #         path: /transfer/{id}
-  #         method: delete
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  delete-transfer:
+    handler: src/handlers/transfer/index.deleteTransferHandler
+    events:
+      - http:
+          path: /transfer/{id}
+          method: delete
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # get-transaction-by-id:
-  #   handler: src/handlers/transaction/getById.handler
-  #   events:
-  #     - http:
-  #         path: /transaction/{id}
-  #         method: get
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  get-transaction-by-id:
+    handler: src/handlers/transaction/index.getTransactionHandler
+    events:
+      - http:
+          path: /transaction/{id}
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # get-transactions:
-  #   handler: src/handlers/transaction/scanByTenantId.handler
-  #   events:
-  #     - http:
-  #         path: /transaction
-  #         method: get
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  get-transactions:
+    handler: src/handlers/transaction/index.getTransactionsHandler
+    events:
+      - http:
+          path: /transaction
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # create-transaction:
-  #   handler: src/handlers/transaction/create.handler
-  #   events:
-  #     - http:
-  #         path: /transaction
-  #         method: post
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  create-transaction:
+    handler: src/handlers/transaction/index.createTransactionHandler
+    events:
+      - http:
+          path: /transaction
+          method: post
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # update-transaction:
-  #   handler: src/handlers/transaction/update.handler
-  #   events:
-  #     - http:
-  #         path: /transaction/{id}
-  #         method: put
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  update-transaction:
+    handler: src/handlers/transaction/index.updateTransactionHandler
+    events:
+      - http:
+          path: /transaction/{id}
+          method: put
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # delete-transaction:
-  #   handler: src/handlers/transaction/delete.handler
-  #   events:
-  #     - http:
-  #         path: /transaction/{id}
-  #         method: delete
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  delete-transaction:
+    handler: src/handlers/transaction/index.deleteTransactionHandler
+    events:
+      - http:
+          path: /transaction/{id}
+          method: delete
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # get-goal-by-id:
-  #   handler: src/handlers/goal/getById.handler
-  #   events:
-  #     - http:
-  #         path: /goal/{id}
-  #         method: get
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  get-goal-by-id:
+    handler: src/handlers/goal/index.getSavingGoalHandler
+    events:
+      - http:
+          path: /goal/{id}
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # get-goals:
-  #   handler: src/handlers/goal/scanByTenantId.handler
-  #   events:
-  #     - http:
-  #         path: /goal
-  #         method: get
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  get-goals:
+    handler: src/handlers/goal/index.getSavingsGoalHandler
+    events:
+      - http:
+          path: /goal
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # create-goal:
-  #   handler: src/handlers/goal/create.handler
-  #   events:
-  #     - http:
-  #         path: /goal
-  #         method: post
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  create-goal:
+    handler: src/handlers/goal/index.createSavingGoalHandler
+    events:
+      - http:
+          path: /goal
+          method: post
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # update-goal:
-  #   handler: src/handlers/goal/update.handler
-  #   events:
-  #     - http:
-  #         path: /goal/{id}
-  #         method: put
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  update-goal:
+    handler: src/handlers/goal/index.updateSavingGoalHandler
+    events:
+      - http:
+          path: /goal/{id}
+          method: put
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # delete-goal:
-  #   handler: src/handlers/goal/delete.handler
-  #   events:
-  #     - http:
-  #         path: /goal/{id}
-  #         method: delete
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  delete-goal:
+    handler: src/handlers/goal/index.deleteSavingGoalHandler
+    events:
+      - http:
+          path: /goal/{id}
+          method: delete
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # get-category-by-id:
-  #   handler: src/handlers/category/getById.handler
-  #   events:
-  #     - http:
-  #         path: /category/{id}
-  #         method: get
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  get-category-by-id:
+    handler: src/handlers/category/index.getCategoryHandler
+    events:
+      - http:
+          path: /category/{id}
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # get-categories:
-  #   handler: src/handlers/category/scanByTenantId.handler
-  #   events:
-  #     - http:
-  #         path: /category
-  #         method: get
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  get-categories:
+    handler: src/handlers/category/index.getCategoriesHandler
+    events:
+      - http:
+          path: /category
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # create-category:
-  #   handler: src/handlers/category/create.handler
-  #   events:
-  #     - http:
-  #         path: /category
-  #         method: post
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  create-category:
+    handler: src/handlers/category/index.createCategoryHandler
+    events:
+      - http:
+          path: /category
+          method: post
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # update-category:
-  #   handler: src/handlers/category/update.handler
-  #   events:
-  #     - http:
-  #         path: /category/{id}
-  #         method: put
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  update-category:
+    handler: src/handlers/category/index.updateCategoryHandler
+    events:
+      - http:
+          path: /category/{id}
+          method: put
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
-  # delete-category:
-  #   handler: src/handlers/category/delete.handler
-  #   events:
-  #     - http:
-  #         path: /category/{id}
-  #         method: delete
-  #         authorizer:
-  #           name: PrivateAuthorizer
-  #           type: COGNITO_USER_POOLS
-  #           arn:
-  #             Fn::GetAtt:
-  #               - UserPool
-  #               - Arn
-  #           claims:
-  #             - email
-  #             - sub
+  delete-category:
+    handler: src/handlers/category/index.deleteCategoryHandler
+    events:
+      - http:
+          path: /category/{id}
+          method: delete
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - email
+              - sub
 
   transactionsDynamoStream:
     handler: src/handlers/streams/transactions.handler
@@ -663,8 +663,8 @@ functions:
           batchSize: 1
           startingPosition: LATEST
           enabled: true
-    # environment:
-    #   TARGET_S3_BUCKET: ${self:provider.environment.TARGET_S3_BUCKET}
+  environment:
+    TARGET_S3_BUCKET: ${self:provider.environment.TARGET_S3_BUCKET}
 
 resources:
   - ${file(./sls/${self:provider.stage}/resources/main.yml)}

@@ -1,19 +1,18 @@
-import { Document } from 'dynamoose/dist/Document';
 import * as dynamoose from 'dynamoose';
+
+import { DocumentWithTenant } from './types';
 
 export enum CategoryType {
   EXPENSE = 1,
   INCOME = 2
 }
 
-export class Category extends Document {
-  id = '';
+export class Category extends DocumentWithTenant {
   name = '';
   type = CategoryType.EXPENSE;
   icon = '';
   color = '';
   budget = 0;
-  tenantId = '';
 }
 
 export const CategorySchema = new dynamoose.Schema(

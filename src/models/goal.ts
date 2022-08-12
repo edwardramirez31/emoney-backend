@@ -1,12 +1,11 @@
-import { Document } from 'dynamoose/dist/Document';
 import * as dynamoose from 'dynamoose';
 
-export class SavingGoal extends Document {
-  id = '';
+import { DocumentWithTenant } from './types';
+
+export class SavingGoal extends DocumentWithTenant {
   goal = '';
   location = '';
   amount = 0;
-  tenantId = '';
   icon = '';
   color = '';
   image = '';

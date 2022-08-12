@@ -1,14 +1,13 @@
-import { Document } from 'dynamoose/dist/Document';
 import * as dynamoose from 'dynamoose';
 
-export class Transfer extends Document {
-  id = '';
+import { DocumentWithTenant } from './types';
+
+export class Transfer extends DocumentWithTenant {
   comment = '';
   sender = '';
   receiver = '';
   amount = 0;
   date = 0;
-  tenantId = '';
 }
 
 export const TransferSchema = new dynamoose.Schema(
