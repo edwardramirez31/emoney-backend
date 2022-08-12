@@ -2,7 +2,7 @@
   "branches": [
     "master"
   ],
-  "repositoryUrl": "https://github.com/edwardramirez31/ecommerce-serverless",
+  "repositoryUrl": "https://github.com/edwardramirez31/emoney-backend",
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
