@@ -9,21 +9,20 @@ export const handler: DynamoDBStreamHandler = async (event) => {
   const record = event.Records[0] as DynamoDBRecord;
   const newImage = record.dynamodb?.NewImage;
   const oldImage = record.dynamodb?.OldImage;
-  const accountRepository = new AccountRepository();
 
   if (!newImage || (!!newImage && Object.keys(newImage).length == 0)) {
     console.log('Transfer was deleted');
     if (oldImage) {
       const oldTransfer = DynamoDB.Converter.unmarshall(oldImage) as TransferRequest;
 
-      await accountRepository.updateOnTransactionDeleted({
+      await AccountRepository.updateOnTransactionDeleted({
         id: oldTransfer.sender,
         tenantId: oldTransfer.tenantId,
         amount: oldTransfer.amount,
         type: CategoryType.EXPENSE
       });
 
-      return await accountRepository.updateOnTransactionDeleted({
+      return await AccountRepository.updateOnTransactionDeleted({
         id: oldTransfer.receiver,
         tenantId: oldTransfer.tenantId,
         amount: oldTransfer.amount,
@@ -34,14 +33,14 @@ export const handler: DynamoDBStreamHandler = async (event) => {
     const incomingTransfer = DynamoDB.Converter.unmarshall(newImage) as TransferRequest;
     if (!oldImage) {
       console.log('Transfer was created');
-      await accountRepository.updateOnTransactionCreated({
+      await AccountRepository.updateOnTransactionCreated({
         id: incomingTransfer.sender,
         tenantId: incomingTransfer.tenantId,
         amount: incomingTransfer.amount,
         type: CategoryType.EXPENSE
       });
 
-      return await accountRepository.updateOnTransactionCreated({
+      return await AccountRepository.updateOnTransactionCreated({
         id: incomingTransfer.receiver,
         tenantId: incomingTransfer.tenantId,
         amount: incomingTransfer.amount,
@@ -52,7 +51,7 @@ export const handler: DynamoDBStreamHandler = async (event) => {
 
     const oldTransfer = DynamoDB.Converter.unmarshall(oldImage) as TransferRequest;
 
-    await accountRepository.updateOnTransactionUpdated({
+    await AccountRepository.updateOnTransactionUpdated({
       id: incomingTransfer.sender,
       tenantId: incomingTransfer.tenantId,
       amount: incomingTransfer.amount,
@@ -60,7 +59,7 @@ export const handler: DynamoDBStreamHandler = async (event) => {
       type: CategoryType.EXPENSE
     });
 
-    return await accountRepository.updateOnTransactionUpdated({
+    return await AccountRepository.updateOnTransactionUpdated({
       id: incomingTransfer.receiver,
       tenantId: incomingTransfer.tenantId,
       amount: incomingTransfer.amount,

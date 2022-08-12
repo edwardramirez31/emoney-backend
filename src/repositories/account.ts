@@ -26,7 +26,7 @@ export interface UpdateOnTransactionUpdated extends UpdateOnTransactionCreated {
   oldAmount: number;
 }
 
-export default class AccountRepository extends CRUDRepository<Account> {
+class AccountRepository extends CRUDRepository<Account> {
   private dbInstanceModel: Model;
 
   constructor() {
@@ -86,3 +86,7 @@ export default class AccountRepository extends CRUDRepository<Account> {
     }
   };
 }
+
+const accountRepository = new AccountRepository();
+
+export default accountRepository;

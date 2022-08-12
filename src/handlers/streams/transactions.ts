@@ -8,14 +8,13 @@ export const handler: DynamoDBStreamHandler = async (event) => {
   const record = event.Records[0] as DynamoDBRecord;
   const newImage = record.dynamodb?.NewImage;
   const oldImage = record.dynamodb?.OldImage;
-  const repository = new AccountRepository();
 
   if (!newImage || (!!newImage && Object.keys(newImage).length == 0)) {
     console.log('Transaction was deleted');
     if (oldImage) {
       const oldTransaction = DynamoDB.Converter.unmarshall(oldImage) as TransactionRequest;
 
-      return await repository.updateOnTransactionDeleted({
+      return await AccountRepository.updateOnTransactionDeleted({
         id: oldTransaction.accountId,
         tenantId: oldTransaction.tenantId,
         amount: oldTransaction.amount,
@@ -27,7 +26,7 @@ export const handler: DynamoDBStreamHandler = async (event) => {
 
     const incomingTransaction = DynamoDB.Converter.unmarshall(newImage) as TransactionRequest;
     if (!oldImage) {
-      return await repository.updateOnTransactionCreated({
+      return await AccountRepository.updateOnTransactionCreated({
         id: incomingTransaction.accountId,
         tenantId: incomingTransaction.tenantId,
         amount: incomingTransaction.amount,
@@ -38,7 +37,7 @@ export const handler: DynamoDBStreamHandler = async (event) => {
 
     const oldTransaction = DynamoDB.Converter.unmarshall(oldImage) as TransactionRequest;
 
-    return await repository.updateOnTransactionUpdated({
+    return await AccountRepository.updateOnTransactionUpdated({
       id: incomingTransaction.accountId,
       tenantId: incomingTransaction.tenantId,
       amount: incomingTransaction.amount,

@@ -1,10 +1,9 @@
-import { Document } from 'dynamoose/dist/Document';
 import * as dynamoose from 'dynamoose';
 
-export class Account extends Document {
-  id = '';
+import { DocumentWithTenant } from './types';
+
+export class Account extends DocumentWithTenant {
   name = '';
-  tenantId = '';
   cleared = 0;
   balance = 0;
   goal = 0;

@@ -1,10 +1,9 @@
-import { Document } from 'dynamoose/dist/Document';
 import * as dynamoose from 'dynamoose';
 
 import { CategoryType } from './category';
+import { DocumentWithTenant } from './types';
 
-export class Transaction extends Document {
-  id = '';
+export class Transaction extends DocumentWithTenant {
   accountId = '';
   comment = '';
   date = '';
@@ -13,7 +12,6 @@ export class Transaction extends Document {
   type = CategoryType.EXPENSE;
   cleared = false;
   amount = 0;
-  tenantId = '';
 }
 
 export const TransactionSchema = new dynamoose.Schema(
