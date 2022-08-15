@@ -1,5 +1,7 @@
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 import { cognitoService } from 'src/services';
+import { responseGenerator } from 'src/utils/responseGenerator';
+import { HttpStatusCode } from 'src/utils/types';
 import { crateValidator } from 'src/validators/create-validator';
 import validateMFASchema from 'src/validators/schemas/validateMFA';
 
@@ -32,11 +34,6 @@ export const handler = apiGwProxy<ValidateMFARequest>({
         .promise();
     }
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        ...result
-      })
-    };
+    return responseGenerator({ statusCode: HttpStatusCode.OK, body: { ...result } });
   }
 });

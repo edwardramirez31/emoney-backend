@@ -3,6 +3,8 @@ import { USER_POOL_CLIENT_ID } from 'src/constants';
 import { cognitoService } from 'src/services';
 import { crateValidator } from 'src/validators/create-validator';
 import confirmUserSignUpSchema from 'src/validators/schemas/confirmUserSignUp';
+import { responseGenerator } from 'src/utils/responseGenerator';
+import HttpStatusCode from 'src/utils/types';
 
 interface ConfirmUserSignUpRequest {
   confirmationCode: string;
@@ -22,9 +24,6 @@ export const handler = apiGwProxy<ConfirmUserSignUpRequest>({
 
     await cognitoService.confirmSignUp(params).promise();
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true })
-    };
+    return responseGenerator({ statusCode: HttpStatusCode.OK, body: { success: true } });
   }
 });

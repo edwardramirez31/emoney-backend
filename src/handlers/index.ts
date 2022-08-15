@@ -6,6 +6,8 @@ import * as uuid from 'uuid';
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { Schema as DynamoSchema } from 'dynamoose/dist/Schema';
 import { Document } from 'dynamoose/dist/Document';
+import { responseGenerator } from 'src/utils/responseGenerator';
+import HttpStatusCode from 'src/utils/types';
 
 export default class CRUDController<T extends Document> {
   private repository: CRUDRepository<T>;
@@ -27,10 +29,7 @@ export default class CRUDController<T extends Document> {
 
         const object = await this.repository.create({ id: uuid.v4(), tenantId, ...body });
 
-        return {
-          statusCode: 201,
-          body: JSON.stringify(object.toJSON())
-        };
+        return responseGenerator({ statusCode: HttpStatusCode.CREATED, body: { ...object.toJSON() } });
       }
     });
 
@@ -44,10 +43,7 @@ export default class CRUDController<T extends Document> {
 
         const object = await this.repository.update({ ...body }, { id: id ?? '', tenantId });
 
-        return {
-          statusCode: 200,
-          body: JSON.stringify(object.toJSON())
-        };
+        return responseGenerator({ statusCode: HttpStatusCode.OK, body: { ...object.toJSON() } });
       }
     });
 
@@ -60,16 +56,13 @@ export default class CRUDController<T extends Document> {
         const object = await this.repository.getById(id ?? '', tenantId);
 
         if (!object) {
-          return {
-            statusCode: 404,
-            body: JSON.stringify({ success: false, message: `${this.entityName} not found` })
-          };
+          return responseGenerator({
+            statusCode: HttpStatusCode.NOT_FOUND,
+            body: { success: false, message: `${this.entityName} not found` }
+          });
         }
 
-        return {
-          statusCode: 200,
-          body: JSON.stringify(object.toJSON())
-        };
+        return responseGenerator({ statusCode: HttpStatusCode.OK, body: { ...object.toJSON() } });
       }
     });
 
@@ -80,10 +73,7 @@ export default class CRUDController<T extends Document> {
 
         const objects = await this.repository.getByTenantId(tenantId);
 
-        return {
-          statusCode: 200,
-          body: JSON.stringify(objects)
-        };
+        return responseGenerator({ statusCode: HttpStatusCode.OK, body: { items: objects } });
       }
     });
 
@@ -96,10 +86,7 @@ export default class CRUDController<T extends Document> {
 
         await this.repository.deleteById(id ?? '', tenantId);
 
-        return {
-          statusCode: 200,
-          body: JSON.stringify({ success: true })
-        };
+        return responseGenerator({ statusCode: HttpStatusCode.OK, body: { success: true } });
       }
     });
 

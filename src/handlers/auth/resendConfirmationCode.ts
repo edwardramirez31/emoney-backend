@@ -1,6 +1,8 @@
 import { USER_POOL_CLIENT_ID } from 'src/constants';
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 import { cognitoService } from 'src/services';
+import { responseGenerator } from 'src/utils/responseGenerator';
+import HttpStatusCode from 'src/utils/types';
 import { crateValidator } from 'src/validators/create-validator';
 import forgotPasswordSchema from 'src/validators/schemas/forgotPassword';
 
@@ -20,11 +22,6 @@ export const handler = apiGwProxy<ResendConfirmationCodeRequest>({
 
     const result = await cognitoService.resendConfirmationCode(params).promise();
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        ...result
-      })
-    };
+    return responseGenerator({ statusCode: HttpStatusCode.OK, body: { ...result } });
   }
 });
