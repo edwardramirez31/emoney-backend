@@ -3,6 +3,8 @@ import { USER_POOL_CLIENT_ID, USER_POOL_ID } from 'src/constants';
 import { cognitoService } from 'src/services';
 import { crateValidator } from 'src/validators/create-validator';
 import respondToAuthChallengeSchema from 'src/validators/schemas/respondToAuthChallenge';
+import { responseGenerator } from 'src/utils/responseGenerator';
+import HttpStatusCode from 'src/utils/types';
 
 interface respondToAuthChallengeRequest {
   challengeName: string;
@@ -27,9 +29,6 @@ export const handler = apiGwProxy<respondToAuthChallengeRequest>({
 
     const response = await cognitoService.adminRespondToAuthChallenge(params).promise();
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ ...response })
-    };
+    return responseGenerator({ statusCode: HttpStatusCode.OK, body: { ...response } });
   }
 });

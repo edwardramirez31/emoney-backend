@@ -8,9 +8,16 @@ export default {
         email: {
           type: 'string',
           format: 'email'
+        },
+        password: { type: 'string', minLength: 8 },
+        first_name: {
+          type: 'string'
+        },
+        last_name: {
+          type: 'string'
         }
       },
-      required: ['email']
+      required: ['email', 'password', 'first_name', 'last_name']
     }
   },
   required: ['body']

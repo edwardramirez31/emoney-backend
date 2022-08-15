@@ -137,7 +137,11 @@ Resources:
           AttributeDataType: String
           Required: true
           Mutable: true
-        - Name: name
+        - Name: first_name
+          AttributeDataType: String
+          Required: false
+          Mutable: true
+        - Name: last_name
           AttributeDataType: String
           Required: false
           Mutable: true
@@ -184,6 +188,17 @@ Resources:
   #     IdentitySource: method.request.header.Authorization
   #     Name: PrivateAuthorizer
   #     RestApiId: !Ref MyApiGW
+
+  GatewayResponseDefault4XX:
+    Type: 'AWS::ApiGateway::GatewayResponse'
+    Properties:
+      ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'http://localhost:3002'"
+        gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        # gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
+      ResponseType: DEFAULT_4XX
+      RestApiId:
+        Ref: 'ApiGatewayRestApi'
 
   Bucket:
     Type: AWS::S3::Bucket

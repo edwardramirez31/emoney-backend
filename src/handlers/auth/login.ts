@@ -3,7 +3,9 @@ import { USER_POOL_ID, USER_POOL_CLIENT_ID, AUTH_FLOW } from 'src/constants';
 import { cognitoService } from 'src/services';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
 import { crateValidator } from 'src/validators/create-validator';
-import authSchema from 'src/validators/schemas/auth';
+import signInSchema from 'src/validators/schemas/signIn';
+import { responseGenerator } from 'src/utils/responseGenerator';
+import HttpStatusCode from 'src/utils/types';
 
 interface LoginRequest {
   email: string;
@@ -38,7 +40,7 @@ export const authenticateUser = async ({
 };
 
 export const handler = apiGwProxy<LoginRequest>({
-  validator: crateValidator(authSchema),
+  validator: crateValidator(signInSchema),
   handler: async (event) => {
     const { email, password } = event.body!;
 
@@ -50,11 +52,6 @@ export const handler = apiGwProxy<LoginRequest>({
       authFlow: AUTH_FLOW
     });
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        ...authResponse
-      })
-    };
+    return responseGenerator({ statusCode: HttpStatusCode.OK, body: { ...authResponse } });
   }
 });

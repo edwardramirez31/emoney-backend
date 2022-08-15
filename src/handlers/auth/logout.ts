@@ -3,6 +3,8 @@ import { USER_POOL_CLIENT_ID } from 'src/constants';
 import { cognitoService } from 'src/services';
 import { crateValidator } from 'src/validators/create-validator';
 import logoutSchema from 'src/validators/schemas/logout';
+import { responseGenerator } from 'src/utils/responseGenerator';
+import HttpStatusCode from 'src/utils/types';
 
 interface LogoutRequest {
   refreshToken: string;
@@ -24,11 +26,11 @@ export const handler = apiGwProxy<LogoutRequest>({
       throw { response: { status: 400, body: { ...result.$response.error } } };
     }
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
+    return responseGenerator({
+      statusCode: HttpStatusCode.OK,
+      body: {
         success: true
-      })
-    };
+      }
+    });
   }
 });

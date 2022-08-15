@@ -1,4 +1,5 @@
 import { APIGatewayProxyHandler, Context, APIGatewayProxyResult } from 'aws-lambda';
+import { responseGenerator } from 'src/utils/responseGenerator';
 
 import { handleValidation } from './../validators/handleValidation';
 import { ApiGwProxyParams, Event } from './apiGatewayProxy.types';
@@ -19,11 +20,9 @@ export const apiGwProxy =
       // eslint-disable-next-line no-console
       console.log(JSON.stringify(error));
 
-      return {
+      return responseGenerator({
         statusCode: error?.response?.status || error?.statusCode || 500,
-        body: JSON.stringify(
-          error?.response?.body || { errorMessage: error?.message || 'Something went wrong', code: error?.code || 'Unknown' }
-        )
-      };
+        body: error?.response?.body || { errorMessage: error?.message || 'Something went wrong', code: error?.code || 'Unknown' }
+      });
     }
   };

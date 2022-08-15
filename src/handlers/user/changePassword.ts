@@ -1,5 +1,7 @@
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
 import { cognitoService } from 'src/services';
+import { responseGenerator } from 'src/utils/responseGenerator';
+import HttpStatusCode from 'src/utils/types';
 import { crateValidator } from 'src/validators/create-validator';
 import changePasswordSchema from 'src/validators/schemas/changePassword';
 
@@ -26,11 +28,11 @@ export const handler = apiGwProxy<ChangePasswordRequest>({
       throw { response: { status: 400, body: { ...result.$response.error } } };
     }
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
+    return responseGenerator({
+      statusCode: HttpStatusCode.OK,
+      body: {
         success: true
-      })
-    };
+      }
+    });
   }
 });

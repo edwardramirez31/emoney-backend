@@ -12,7 +12,10 @@ export default {
               type: 'string',
               format: 'email'
             },
-            name: {
+            'custom:first_name': {
+              type: 'string'
+            },
+            'custom:last_name': {
               type: 'string'
             },
             phone_number: {
