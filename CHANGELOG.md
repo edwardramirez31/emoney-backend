@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/edwardramirez31/emoney-backend/compare/v1.0.0...v1.0.1) (2022-08-21)
+
+
+### Bug Fixes
+
+* change cors error config ([f857bca](https://github.com/edwardramirez31/emoney-backend/commit/f857bcad0ca57f97672a8ed0c0d5e9d4a941a388))
+
 # 1.0.0 (2022-08-12)
 
 
