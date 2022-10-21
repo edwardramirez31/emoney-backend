@@ -189,34 +189,34 @@ Resources:
   #     Name: PrivateAuthorizer
   #     RestApiId: !Ref MyApiGW
 
-  GatewayResponseDefault4XX:
-    Type: 'AWS::ApiGateway::GatewayResponse'
-    Properties:
-      ResponseParameters:
-        gatewayresponse.header.Access-Control-Allow-Origin: "'http://localhost:3002'"
-        gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        # gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
-      ResponseType: DEFAULT_4XX
-      RestApiId:
-        Ref: 'ApiGatewayRestApi'
+  # GatewayResponseDefault4XX:
+  #   Type: 'AWS::ApiGateway::GatewayResponse'
+  #   Properties:
+  #     ResponseParameters:
+  #       gatewayresponse.header.Access-Control-Allow-Origin: "'http://localhost:3002'"
+  #       gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+  #       # gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
+  #     ResponseType: DEFAULT_4XX
+  #     RestApiId:
+  #       Ref: 'ApiGatewayRestApi'
 
-  Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: ${self:provider.environment.TARGET_S3_BUCKET}
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256
-      VersioningConfiguration:
-        Status: Enabled
-      CorsConfiguration:
-        CorsRules:
-          - AllowedHeaders: ['*']
-            AllowedMethods: [GET, PUT]
-            AllowedOrigins: ['*']
-            Id: CORSRuleId1
-            MaxAge: '3600'
+  # Bucket:
+  #   Type: AWS::S3::Bucket
+  #   Properties:
+  #     BucketName: ${self:provider.environment.TARGET_S3_BUCKET}
+  #     BucketEncryption:
+  #       ServerSideEncryptionConfiguration:
+  #         - ServerSideEncryptionByDefault:
+  #             SSEAlgorithm: AES256
+  #     VersioningConfiguration:
+  #       Status: Enabled
+  #     CorsConfiguration:
+  #       CorsRules:
+  #         - AllowedHeaders: ['*']
+  #           AllowedMethods: [GET, PUT]
+  #           AllowedOrigins: ['*']
+  #           Id: CORSRuleId1
+  #           MaxAge: '3600'
 # Outputs:
 #   AuthorizerRef:
 #     Value:

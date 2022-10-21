@@ -6,8 +6,7 @@ import { cognitoService } from 'src/services';
 
 export const handler = apiGwProxy({
   handler: async (event) => {
-    const username = event.requestContext.authorizer?.claims.email;
-
+    const username = event.requestContext.authorizer?.jwt.claims.email ?? '';
     const params = {
       Username: username,
       UserPoolId: USER_POOL_ID ?? ''

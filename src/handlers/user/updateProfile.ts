@@ -14,7 +14,7 @@ export const handler = apiGwProxy<ProfileRequest>({
   validator: crateValidator(profileSchema),
   handler: async (event) => {
     const { userAttributes } = event.body!;
-    const username = event.requestContext.authorizer?.claims.email;
+    const username = event.requestContext.authorizer?.jwt.claims.email ?? '';
 
     const mappedAttributes = Object.entries(userAttributes).map(([name, value]) => ({
       Name: name,

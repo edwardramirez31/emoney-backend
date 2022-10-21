@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import CRUDRepository from 'src/repositories';
 import { Schema } from 'ajv';
 import { apiGwProxy } from 'src/decorators/apiGatewayProxy';
@@ -25,7 +26,7 @@ export default class CRUDController<T extends Document> {
       validator: crateValidator(this.validatorSchema),
       handler: async (event) => {
         const body = event.body!;
-        const tenantId = event.requestContext.authorizer?.claims.sub;
+        const tenantId = event.requestContext.authorizer?.jwt.claims.sub ?? '';
 
         const object = await this.repository.create({ id: uuid.v4(), tenantId, ...body });
 
@@ -39,7 +40,7 @@ export default class CRUDController<T extends Document> {
       handler: async (event) => {
         const body = event.body!;
         const { id } = event.pathParameters!;
-        const tenantId = event.requestContext.authorizer?.claims.sub;
+        const tenantId = event.requestContext.authorizer?.jwt.claims.sub ?? '';
 
         const object = await this.repository.update({ ...body }, { id: id ?? '', tenantId });
 
@@ -51,7 +52,7 @@ export default class CRUDController<T extends Document> {
     apiGwProxy({
       handler: async (event) => {
         const { id } = event.pathParameters!;
-        const tenantId = event.requestContext.authorizer?.claims.sub;
+        const tenantId = event.requestContext.authorizer?.jwt.claims.sub ?? '';
 
         const object = await this.repository.getById(id ?? '', tenantId);
 
@@ -69,7 +70,7 @@ export default class CRUDController<T extends Document> {
   scanByTenantId = (): APIGatewayProxyHandler =>
     apiGwProxy({
       handler: async (event) => {
-        const tenantId = event.requestContext.authorizer?.claims.sub;
+        const tenantId = event.requestContext.authorizer?.jwt.claims.sub ?? '';
 
         const objects = await this.repository.getByTenantId(tenantId);
 
@@ -80,7 +81,7 @@ export default class CRUDController<T extends Document> {
   delete = (): APIGatewayProxyHandler =>
     apiGwProxy({
       handler: async (event) => {
-        const tenantId = event.requestContext.authorizer?.claims.sub;
+        const tenantId = event.requestContext.authorizer?.jwt.claims.sub ?? '';
 
         const { id } = event.pathParameters!;
 
