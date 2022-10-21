@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/edwardramirez31/emoney-backend/compare/v1.0.1...v2.0.0) (2022-10-21)
+
+
+### Features
+
+* use httpApi serverless events ([db38a1d](https://github.com/edwardramirez31/emoney-backend/commit/db38a1d93dbb315497c2361dc2e999835954bcd2))
+
+
+### BREAKING CHANGES
+
+* migrate to AWS Api Gateway V2
+
 ## [1.0.1](https://github.com/edwardramirez31/emoney-backend/compare/v1.0.0...v1.0.1) (2022-08-21)
 
 
