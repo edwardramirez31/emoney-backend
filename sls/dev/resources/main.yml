@@ -179,6 +179,96 @@ Resources:
       ExplicitAuthFlows:
         - 'ADMIN_NO_SRP_AUTH'
 
+  TransactionsSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: EmoneyTransactionsTopicToSQS
+      TopicName: EmoneyTransactionsTopic
+      Tags:
+        - Key: 'project'
+          Value: 'emoney'
+
+  TransactionsQueueSNSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !GetAtt TransactionsQueue.Arn
+      Protocol: 'sqs'
+      RawMessageDelivery: true
+      TopicArn: !Ref TransactionsSNSTopic
+
+  TransactionsReportQueueSNSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !GetAtt TransactionsReportQueue.Arn
+      Protocol: 'sqs'
+      RawMessageDelivery: true
+      TopicArn: !Ref TransactionsSNSTopic
+
+  TransactionsSNSTopicParameter:
+    DeletionPolicy: Retain
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: 'Emoney transactions SNS topic ARN needed to publish messages from AWS Lambda'
+      Name: ${self:service}-transactions-topic-arn-${opt:stage, self:provider.stage, "dev"}
+      Type: String
+      Value: !Ref TransactionsSNSTopic
+
+  TransactionsQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref TransactionsQueue
+        - !Ref TransactionsReportQueue
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Action: 'sqs:SendMessage'
+            Resource: '*'
+            Principal:
+              Service: 'sns.amazonaws.com'
+            Condition:
+              ArnEquals:
+                AWS:SourceArn: !Ref TransactionsSNSTopic
+
+  TransactionsDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: EmoneyTransactionsDeadLetterQueue
+      Tags:
+        - Key: 'project'
+          Value: 'emoney'
+
+  TransactionsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: EmoneyTransactionsQueue
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt TransactionsDeadLetterQueue.Arn
+        maxReceiveCount: 10
+      Tags:
+        - Key: 'project'
+          Value: 'emoney'
+
+  TransactionsReportDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: EmoneyTransactionsReportDeadLetterQueue
+      Tags:
+        - Key: 'project'
+          Value: 'emoney'
+
+  TransactionsReportQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: EmoneyTransactionsReportQueue
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt TransactionsReportDeadLetterQueue.Arn
+        maxReceiveCount: 10
+      Tags:
+        - Key: 'project'
+          Value: 'emoney'
+
   # Authorizer:
   #   Type: AWS::ApiGateway::Authorizer
   #   Properties:
@@ -200,14 +290,15 @@ Resources:
   #     RestApiId:
   #       Ref: 'ApiGatewayRestApi'
 
-  # Bucket:
-  #   Type: AWS::S3::Bucket
-  #   Properties:
-  #     BucketName: ${self:provider.environment.TARGET_S3_BUCKET}
-  #     BucketEncryption:
-  #       ServerSideEncryptionConfiguration:
-  #         - ServerSideEncryptionByDefault:
-  #             SSEAlgorithm: AES256
+  TransactionsDataBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:provider.environment.TARGET_S3_BUCKET}
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
   #     VersioningConfiguration:
   #       Status: Enabled
   #     CorsConfiguration:
@@ -238,12 +329,3 @@ Resources:
 #     Export:
 #       Name: api-gateway-${opt:stage, self:provider.stage, "dev"}-root-resource-id
 
-# UserTableStreamParameter:
-#   DeletionPolicy: Retain
-#   Type: AWS::SSM::Parameter
-#   DependsOn: AccountsTable
-#   Properties:
-#     Description: PRODUCTS_TABLE_STREAM_ARN
-#     Name: ${self:service}-accounts-stream-${opt:stage, self:provider.stage, "dev"}
-#     Type: String
-#     Value: !GetAtt AccountsTable.StreamArn

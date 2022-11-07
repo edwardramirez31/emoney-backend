@@ -24,7 +24,8 @@ provider:
     USER_POOL_ID: !Ref UserPool
     USER_POOL_CLIENT_ID: !Ref UserClient
     AUTH_FLOW: 'ADMIN_NO_SRP_AUTH'
-    TARGET_S3_BUCKET: products-backup-${opt:stage, self:provider.stage, "dev"}
+    TARGET_S3_BUCKET: ${self:service}-transactions-data-${opt:stage, self:provider.stage, "dev"}
+    SNS_TOPIC_ARN: !Ref TransactionsSNSTopic
   httpApi:
     cors:
       allowedOrigins:
@@ -53,7 +54,19 @@ provider:
             - cognito-idp:AdminUpdateUserAttributes
             - cognito-idp:AdminGetUser
             - cognito-idp:AdminRespondToAuthChallenge
-          Resource: '*'
+          Resource: !GetAtt UserPool.Arn
+        - Effect: Allow
+          Action:
+            - sns:Publish
+          Resource: !Ref TransactionsSNSTopic
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:DeleteObject
+          Resource:
+            - !GetAtt TransactionsDataBucket.Arn
+            - !Sub ${TransactionsDataBucket.Arn}/*
         - Effect: Allow
           Action:
             - dynamodb:Query
@@ -405,6 +418,26 @@ functions:
           method: delete
           authorizer:
             name: jwtAuthorizer
+
+  updateAccountOnTransaction:
+    handler: src/handlers/sqs/updateAccountOnTransaction.handler
+    name: ${self:service}-transactions-${opt:stage, self:provider.stage, "dev"}-sqs-handler
+    events:
+      - sqs:
+          arn: !GetAtt TransactionsQueue.Arn
+          batchSize: 10
+          maximumBatchingWindow: 60
+          functionResponseType: ReportBatchItemFailures
+
+  updateTransactionReport:
+    handler: src/handlers/sqs/updateTransactionReport.handler
+    name: ${self:service}-transactions-${opt:stage, self:provider.stage, "dev"}-sqs-update-report
+    events:
+      - sqs:
+          arn: !GetAtt TransactionsReportQueue.Arn
+          batchSize: 10
+          maximumBatchingWindow: 60
+          functionResponseType: ReportBatchItemFailures
 
   transactionsDynamoStream:
     handler: src/handlers/streams/transactions.handler
