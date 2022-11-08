@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/edwardramirez31/emoney-backend/compare/v2.0.0...v2.1.0) (2022-11-08)
+
+
+### Features
+
+* use queue to update account balance on transaction ([b6f206e](https://github.com/edwardramirez31/emoney-backend/commit/b6f206e34c6ca197a856425c9fd3ce0924dfd670))
+
 # [2.0.0](https://github.com/edwardramirez31/emoney-backend/compare/v1.0.1...v2.0.0) (2022-10-21)
 
 
